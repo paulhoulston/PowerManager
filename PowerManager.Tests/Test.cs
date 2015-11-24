@@ -11,9 +11,17 @@ namespace PowerManager.Tests
             [Test ()]
             public void Then_no_power_action_is_applied ()
             {
-                Assert.IsTrue(false);
+                var powerMgr = new PowerManager ();
+                Assert.IsFalse (powerMgr.Run(0));
             }
         }
     }
-}
 
+    public class PowerManager
+    {
+        public bool Run (int idleTime)
+        {
+            return false;
+        }
+    }
+}
