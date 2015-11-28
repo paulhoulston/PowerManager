@@ -2,6 +2,8 @@
 
 namespace PowerManager.Tests
 {
+    #region PowerManagerRunner
+
     class PowerManagerRunner : PowerManager.IApplyPowerActions, PowerManager.ILockComputers
     {
         public bool PowerActionApplied{ get; private set; }
@@ -29,6 +31,7 @@ namespace PowerManager.Tests
             _powerMgr.Run (idleTime);
         }
     }
+    #endregion
 
     [TestFixture]
     public class Given_it_is_during_business_hours
@@ -56,14 +59,25 @@ namespace PowerManager.Tests
             }
         }
 
-        public class When_the_computer_is_idle_AND_the_idle_time
+        public class When_the_computer_is_idle_for_less_than_the_lock_timeout
         {
+            readonly PowerManagerRunner _runner = new PowerManagerRunner ();
+
+            public When_the_computer_is_idle_for_less_than_the_lock_timeout ()
+            {
+                _runner.Run (1);
+            }
+
             [Test]
             public void Then_a_power_action_is_applied()
             {
-                var runner = new PowerManagerRunner ();
-                runner.Run (1);
-                Assert.IsTrue (runner.PowerActionApplied);
+                Assert.IsTrue (_runner.PowerActionApplied);
+            }
+
+            [Test]
+            public void And_the_computer_is_not_locked()
+            {
+                Assert.IsFalse (_runner.ComputerLocked);
             }
         }
 
@@ -73,7 +87,7 @@ namespace PowerManager.Tests
             public void Then_the_computer_is_locked()
             {
                 var runner = new PowerManagerRunner ();
-                runner.Run (1);
+                runner.Run (2);
                 Assert.IsTrue (runner.ComputerLocked);
             }
         }
