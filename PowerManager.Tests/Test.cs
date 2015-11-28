@@ -9,9 +9,14 @@ namespace PowerManager.Tests
 
         readonly PowerManager _powerMgr;
 
-        public PowerManagerRunner (Policy policy)
+        public PowerManagerRunner (int idleTime, Policy policy)
         {
-            _powerMgr = new PowerManager (this, this, policy);
+            _powerMgr = new PowerManager (idleTime, new PowerManager.Dependencies {
+                ComputerLocker = this, 
+                PowerAction = this,
+                Policy = policy
+            });
+            _powerMgr.Run ();
         }
             
         public void Apply ()
@@ -23,11 +28,6 @@ namespace PowerManager.Tests
         {
             ComputerLocked = true;
         }
-            
-        public void Run(int idleTime)
-        {
-            _powerMgr.Run (idleTime);
-        }
     }
 
     [TestFixture]
@@ -35,13 +35,7 @@ namespace PowerManager.Tests
     {
         public class When_the_computer_is_not_idle
         {
-            readonly PowerManagerRunner _runner;
-
-            public When_the_computer_is_not_idle ()
-            {
-                _runner = new PowerManagerRunner(new Policy());
-                _runner.Run (0);
-            }
+            readonly PowerManagerRunner _runner = new PowerManagerRunner(0, new Policy());
 
             [Test]
             public void Then_no_power_action_is_applied ()
@@ -58,13 +52,7 @@ namespace PowerManager.Tests
 
         public class When_the_computer_is_idle_for_less_than_the_lock_timeout
         {
-            readonly PowerManagerRunner _runner;
-
-            public When_the_computer_is_idle_for_less_than_the_lock_timeout ()
-            {
-                _runner = new PowerManagerRunner (new Policy{ LockComputerTimeOut= 1});
-                _runner.Run (1);
-            }
+            readonly PowerManagerRunner _runner = new PowerManagerRunner (1, new Policy{ LockComputerTimeOut= 1});
 
             [Test]
             public void Then_a_power_action_is_applied()
@@ -81,12 +69,12 @@ namespace PowerManager.Tests
 
         public class When_the_computer_is_idle_for_longer_than_the_lock_timeout
         {
+            readonly PowerManagerRunner _runner = new PowerManagerRunner (6, new Policy{ LockComputerTimeOut = 5 });
+
             [Test]
             public void Then_the_computer_is_locked()
             {
-                var runner = new PowerManagerRunner (new Policy{ LockComputerTimeOut = 5 });
-                runner.Run (6);
-                Assert.IsTrue (runner.ComputerLocked);
+                Assert.IsTrue (_runner.ComputerLocked);
             }
         }
     }

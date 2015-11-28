@@ -7,9 +7,8 @@ namespace PowerManager
 
     public class PowerManager
     {
-        readonly IApplyPowerActions _powerAction;
-        readonly ILockComputers _computerLocker;
-        readonly Policy _policy;
+        readonly Dependencies _dependencies;
+        readonly int _idleTime;
 
         public interface IApplyPowerActions
         {
@@ -21,21 +20,27 @@ namespace PowerManager
             void LockComputer();
         }
 
-        public PowerManager (IApplyPowerActions powerAction, ILockComputers computerLocker, Policy policy)
+        public class Dependencies
         {
-            _policy = policy;
-            _computerLocker = computerLocker;
-            _powerAction = powerAction;
+            public IApplyPowerActions PowerAction{get;set;}
+            public ILockComputers ComputerLocker{get;set;}
+            public Policy Policy{get;set;}
         }
 
-        public void Run (int idleTime)
+        public PowerManager (int idleTime, Dependencies dependencies)
         {
-            if (idleTime > _policy.LockComputerTimeOut) {
-                _computerLocker.LockComputer ();
+            _idleTime = idleTime;
+            _dependencies = dependencies;
+        }
+
+        public void Run ()
+        {
+            if (_idleTime > _dependencies.Policy.LockComputerTimeOut) {
+                _dependencies.ComputerLocker.LockComputer ();
             }
 
-            if (idleTime > 0) {
-                _powerAction.Apply ();
+            if (_idleTime > 0) {
+                _dependencies.PowerAction.Apply ();
             }
         }
     }
