@@ -40,4 +40,10 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\PowerManager\PowerManager.csproj">
+      <Project>{FF16A841-DD32-4292-8BE6-B423BF568FE4}</Project>
+      <Name>PowerManager</Name>
+    </ProjectReference>
+  </ItemGroup>
 </Project>
