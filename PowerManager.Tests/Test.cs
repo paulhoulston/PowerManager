@@ -2,8 +2,6 @@
 
 namespace PowerManager.Tests
 {
-    #region PowerManagerRunner
-
     class PowerManagerRunner : PowerManager.IApplyPowerActions, PowerManager.ILockComputers
     {
         public bool PowerActionApplied{ get; private set; }
@@ -11,11 +9,11 @@ namespace PowerManager.Tests
 
         readonly PowerManager _powerMgr;
 
-        public PowerManagerRunner ()
+        public PowerManagerRunner (Policy policy)
         {
-            _powerMgr = new PowerManager (this, this);
+            _powerMgr = new PowerManager (this, this, policy);
         }
-
+            
         public void Apply ()
         {
             PowerActionApplied = true;
@@ -31,7 +29,6 @@ namespace PowerManager.Tests
             _powerMgr.Run (idleTime);
         }
     }
-    #endregion
 
     [TestFixture]
     public class Given_it_is_during_business_hours
@@ -42,7 +39,7 @@ namespace PowerManager.Tests
 
             public When_the_computer_is_not_idle ()
             {
-                _runner = new PowerManagerRunner();
+                _runner = new PowerManagerRunner(new Policy());
                 _runner.Run (0);
             }
 
@@ -61,10 +58,11 @@ namespace PowerManager.Tests
 
         public class When_the_computer_is_idle_for_less_than_the_lock_timeout
         {
-            readonly PowerManagerRunner _runner = new PowerManagerRunner ();
+            readonly PowerManagerRunner _runner;
 
             public When_the_computer_is_idle_for_less_than_the_lock_timeout ()
             {
+                _runner = new PowerManagerRunner (new Policy{ LockComputerTimeOut= 1});
                 _runner.Run (1);
             }
 
@@ -86,8 +84,8 @@ namespace PowerManager.Tests
             [Test]
             public void Then_the_computer_is_locked()
             {
-                var runner = new PowerManagerRunner ();
-                runner.Run (2);
+                var runner = new PowerManagerRunner (new Policy{ LockComputerTimeOut = 5 });
+                runner.Run (6);
                 Assert.IsTrue (runner.ComputerLocked);
             }
         }
