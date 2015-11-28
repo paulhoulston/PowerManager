@@ -2,6 +2,8 @@
 
 namespace PowerManager.Tests
 {
+    
+
     [TestFixture]
     public class Given_it_is_during_business_hours
     {
@@ -25,6 +27,16 @@ namespace PowerManager.Tests
             {
                 _powerMgr.Run (0);
                 Assert.IsFalse (_powerActionApplied);
+            }
+        }
+
+        public class When_the_computer_is_idle_a_power_action_is_applied
+        {
+            [Test]
+            public void Then_a_power_action_is_applied()
+            {
+                bool powerActionApplied = false;
+                Assert.IsTrue (powerActionApplied);
             }
         }
     }
