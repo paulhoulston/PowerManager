@@ -26,9 +26,8 @@ namespace PowerManager
         {
             if (idleTime > 0) {
                 _powerAction.Apply ();
+                _computerLocker.LockComputer ();
             }
-
-            _computerLocker.LockComputer ();
         }
     }
 }

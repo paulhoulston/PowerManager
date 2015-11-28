@@ -35,7 +35,7 @@ namespace PowerManager.Tests
     {
         public class When_the_computer_is_not_idle
         {
-            PowerManagerRunner _runner;
+            readonly PowerManagerRunner _runner;
 
             public When_the_computer_is_not_idle ()
             {
