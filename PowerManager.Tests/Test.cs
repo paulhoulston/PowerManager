@@ -35,12 +35,24 @@ namespace PowerManager.Tests
     {
         public class When_the_computer_is_not_idle
         {
+            PowerManagerRunner _runner;
+
+            public When_the_computer_is_not_idle ()
+            {
+                _runner = new PowerManagerRunner();
+                _runner.Run (0);
+            }
+
             [Test]
             public void Then_no_power_action_is_applied ()
             {
-                var runner = new PowerManagerRunner ();
-                runner.Run (0);
-                Assert.IsFalse (runner.PowerActionApplied);
+                Assert.IsFalse (_runner.PowerActionApplied);
+            }
+
+            [Test]
+            public void And_the_computer_is_not_locked()
+            {
+                Assert.IsFalse (_runner.ComputerLocked);
             }
         }
 
