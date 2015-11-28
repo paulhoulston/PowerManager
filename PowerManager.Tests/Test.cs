@@ -2,14 +2,16 @@
 
 namespace PowerManager.Tests
 {
-    class PowerManagerRunner : PowerManager.IApplyPowerActions
+    class PowerManagerRunner : PowerManager.IApplyPowerActions, PowerManager.ILockComputers
     {
         public bool PowerActionApplied{ get; private set; }
+        public bool ComputerLocked { get; private set; }
+
         readonly PowerManager _powerMgr;
 
         public PowerManagerRunner ()
         {
-            _powerMgr = new PowerManager (this);
+            _powerMgr = new PowerManager (this, this);
         }
 
         public void Apply ()
@@ -17,6 +19,11 @@ namespace PowerManager.Tests
             PowerActionApplied = true;
         }
 
+        public void LockComputer ()
+        {
+            ComputerLocked = true;
+        }
+            
         public void Run(int idleTime)
         {
             _powerMgr.Run (idleTime);
@@ -37,7 +44,7 @@ namespace PowerManager.Tests
             }
         }
 
-        public class When_the_computer_is_idle_a_power_action_is_applied
+        public class When_the_computer_is_idle_AND_the_idle_time
         {
             [Test]
             public void Then_a_power_action_is_applied()
@@ -47,21 +54,38 @@ namespace PowerManager.Tests
                 Assert.IsTrue (runner.PowerActionApplied);
             }
         }
+
+        public class When_the_computer_is_idle_for_longer_than_the_lock_timeout
+        {
+            [Test]
+            public void Then_the_computer_is_locked()
+            {
+                var runner = new PowerManagerRunner ();
+                runner.Run (1);
+                Assert.IsTrue (runner.ComputerLocked);
+            }
+        }
     }
 
     public class PowerManager
     {
         readonly IApplyPowerActions _powerAction;
+        readonly ILockComputers _computerLocker;
 
         public interface IApplyPowerActions
         {
             void Apply();
         }
 
-        public PowerManager (IApplyPowerActions powerAction)
+        public interface ILockComputers
         {
+            void LockComputer();
+        }
+
+        public PowerManager (IApplyPowerActions powerAction, ILockComputers computerLocker)
+        {
+            this._computerLocker = computerLocker;
             _powerAction = powerAction;
-            
         }
 
         public void Run (int idleTime)
@@ -69,6 +93,8 @@ namespace PowerManager.Tests
             if (idleTime > 0) {
                 _powerAction.Apply ();
             }
+
+            _computerLocker.LockComputer ();
         }
     }
 }
