@@ -1,27 +1,54 @@
 ﻿using NUnit.Framework;
-using System;
 
 namespace PowerManager.Tests
 {
-    [TestFixture ()]
-    public class Given_I_want_to_manage_the_power_on_my_computer
+    [TestFixture]
+    public class Given_it_is_during_business_hours
     {
-        public class When_the_computer_idle_time_is_zero
+        public class When_the_computer_is_not_idle : PowerManager.IApplyPowerActions
         {
-            [Test ()]
+            bool _powerActionApplied;
+            readonly PowerManager _powerMgr;
+
+            public When_the_computer_is_not_idle ()
+            {
+                _powerMgr = new PowerManager (this);
+            }
+
+            public void Apply ()
+            {
+                _powerActionApplied = true;
+            }
+
+            [Test]
             public void Then_no_power_action_is_applied ()
             {
-                var powerMgr = new PowerManager ();
-                Assert.IsFalse (powerMgr.Run(0));
+                _powerMgr.Run (0);
+                Assert.IsFalse (_powerActionApplied);
             }
         }
     }
 
     public class PowerManager
     {
-        public bool Run (int idleTime)
+        private readonly IApplyPowerActions _powerAction;
+
+        public interface IApplyPowerActions
         {
-            return false;
+            void Apply();
+        }
+
+        public PowerManager (IApplyPowerActions powerAction)
+        {
+            _powerAction = powerAction;
+            
+        }
+
+        public void Run (int idleTime)
+        {
+            if (idleTime > 0) {
+                _powerAction.Apply ();
+            }
         }
     }
 }
