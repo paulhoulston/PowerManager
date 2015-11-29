@@ -40,14 +40,24 @@ namespace PowerManager
 
         public void Run ()
         {
+            // Locking the computer is not a power action so perform lock whether or not we apply a power action
             if (lockTimeoutExceeded ()) {
                 _dependencies.ComputerLocker.LockComputer ();
+            }
+
+            if (hibernatePeriodExceeded ()) {
+                _dependencies.PowerApplicator.Hibernate ();
             }
         }
 
         bool lockTimeoutExceeded ()
         {
             return _dependencies.Policy.LockComputerTimeOut > 0 && _idleTime > _dependencies.Policy.LockComputerTimeOut;
+        }
+
+        bool hibernatePeriodExceeded ()
+        {
+            return _dependencies.Policy.HibernateTimeout > 0 && _idleTime > _dependencies.Policy.HibernateTimeout;
         }
 
     }

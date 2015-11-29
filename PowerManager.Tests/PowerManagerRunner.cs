@@ -13,7 +13,7 @@ namespace PowerManager.Tests
         {
             _powerMgr = new PowerManager (idleTime, new PowerManager.Dependencies {
                 ComputerLocker = this,
-
+                PowerApplicator = this,
                 Policy = policy
             });
             _powerMgr.Run ();

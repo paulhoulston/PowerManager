@@ -94,9 +94,9 @@ namespace PowerManager.Tests
 
         public class When_the_computer_idle_time_is_greater_than_the_hibernate_timeout
         {
-            readonly PowerManagerRunner _runner = new PowerManagerRunner (2, new Policy {
-                LockComputerTimeOut = 3,
-                HibernateTimeout = 0
+            readonly PowerManagerRunner _runner = new PowerManagerRunner (3, new Policy {
+                LockComputerTimeOut = 0,
+                HibernateTimeout = 2
             });
 
             [Test]
@@ -126,5 +126,4 @@ namespace PowerManager.Tests
             }
         }
     }
-
 }
