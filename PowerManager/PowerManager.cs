@@ -35,7 +35,7 @@ namespace PowerManager
 
         public void Run ()
         {
-            if (_idleTime > _dependencies.Policy.LockComputerTimeOut) {
+            if (_dependencies.Policy.LockComputerTimeOut > 0 && _idleTime > _dependencies.Policy.LockComputerTimeOut) {
                 _dependencies.ComputerLocker.LockComputer ();
             }
 
