@@ -14,6 +14,12 @@ namespace PowerManager.Tests
             {
                 Assert.IsFalse (_runner.ComputerLocked);
             }
+
+            [Test]
+            public void And_the_computer_is_not_hibernated()
+            {
+                Assert.IsFalse (_runner.ComputerHibernated);
+            }
         }
 
         public class When_the_computer_is_idle_for_less_than_the_lock_timeout

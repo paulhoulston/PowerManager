@@ -15,10 +15,20 @@ namespace PowerManager
             void LockComputer();
         }
 
+        public interface IApplyPowerActions : IHibernateComputers
+        {
+        }
+
+        public interface IHibernateComputers
+        {
+            void Hibernate();
+        }
+
         public class Dependencies
         {
-            public ILockComputers ComputerLocker{get;set;}
-            public Policy Policy{get;set;}
+            public ILockComputers ComputerLocker { get; set; }
+            public IApplyPowerActions PowerApplicator { get; set; }
+            public Policy Policy { get; set; }
         }
 
         public PowerManager (int idleTime, Dependencies dependencies)

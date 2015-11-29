@@ -2,9 +2,9 @@ using NUnit.Framework;
 
 namespace PowerManager.Tests
 {
-    class PowerManagerRunner : PowerManager.ILockComputers
+    class PowerManagerRunner : PowerManager.ILockComputers, PowerManager.IApplyPowerActions
     {
-        public bool PowerActionApplied{ get; private set; }
+        public bool ComputerHibernated { get; private set; }
         public bool ComputerLocked { get; private set; }
 
         readonly PowerManager _powerMgr;
@@ -13,6 +13,7 @@ namespace PowerManager.Tests
         {
             _powerMgr = new PowerManager (idleTime, new PowerManager.Dependencies {
                 ComputerLocker = this,
+
                 Policy = policy
             });
             _powerMgr.Run ();
@@ -21,6 +22,11 @@ namespace PowerManager.Tests
         public void LockComputer ()
         {
             ComputerLocked = true;
+        }
+
+        public void Hibernate ()
+        {
+            ComputerHibernated = true;
         }
     }
 
