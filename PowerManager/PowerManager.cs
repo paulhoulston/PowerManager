@@ -3,6 +3,7 @@ namespace PowerManager
     public class Policy
     {
         public int LockComputerTimeOut{ get; set; }
+        public int HibernateTimeout{ get; set; }
     }
 
     public class PowerManager
