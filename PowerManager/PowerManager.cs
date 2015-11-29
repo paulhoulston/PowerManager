@@ -35,7 +35,7 @@ namespace PowerManager
 
         public void Run ()
         {
-            if (_dependencies.Policy.LockComputerTimeOut > 0 && _idleTime > _dependencies.Policy.LockComputerTimeOut) {
+            if (lockTimeoutExceeded ()) {
                 _dependencies.ComputerLocker.LockComputer ();
             }
 
@@ -43,5 +43,11 @@ namespace PowerManager
                 _dependencies.PowerAction.Apply ();
             }
         }
+
+        bool lockTimeoutExceeded ()
+        {
+            return _dependencies.Policy.LockComputerTimeOut > 0 && _idleTime > _dependencies.Policy.LockComputerTimeOut;
+        }
+
     }
 }
