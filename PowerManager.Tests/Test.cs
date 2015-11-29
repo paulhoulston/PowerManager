@@ -77,6 +77,17 @@ namespace PowerManager.Tests
                 Assert.IsTrue (_runner.ComputerLocked);
             }
         }
+
+        public class When_the_lock_time_period_is_set_to_zero
+        {
+            readonly PowerManagerRunner _runner = new PowerManagerRunner (6, new Policy{ LockComputerTimeOut = 0 });
+
+            [Test]
+            public void Then_the_computer_is_not_locked()
+            {
+                Assert.IsFalse (_runner.ComputerLocked);
+            }
+        }
     }
 
 }
